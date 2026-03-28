@@ -29,7 +29,7 @@ License: 		Copyright 2026 Tristan McGuire
 				OF SUCH DAMAGE.
 """
 
-import hashlib, secrets
+import hashlib, secrets, argparse
 from getpass import getpass
 
 
@@ -57,7 +57,7 @@ def validate_pw(password: str) -> bool:
 
 	for letter in password:
 		if ord(letter) < characters[0] or ord(letter) > characters[1]:
-			print("Password must contain only a-z, A-Z, 0-9, !@£$%^&*()[]{}<>,.-_+=\\~|/?#.")
+			print("Password must contain only a-z, A-Z, 0-9, !@$%^&*()[]{}<>,.-_+=\\~|/?#.")
 			return False
 
 	return True
@@ -78,7 +78,11 @@ def main():
 		exit(0)
 
 	hash_data = hash_pw(password)
-	print(f"Hash: {hash_data[1]}")
+
+	credfile = open("pwcred.txt", "w")
+	credfile.write(f"{hash_data[0]},{hash_data[1]}")
+
+	print("Done.\n")
 
 
 if __name__ == "__main__":
