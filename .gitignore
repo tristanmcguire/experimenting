@@ -146,3 +146,5 @@ venv.bak/
 
 pyvenv.cfg
 bin/
+pwcred.txt
+

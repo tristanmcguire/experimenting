@@ -31,35 +31,35 @@ License: 		Copyright 2026 Tristan McGuire
 
 import hashlib, secrets, argparse
 from getpass import getpass
+from cryptography.fernet import Fernet
 
 
 def get_pw() -> str:
 	pw1 = getpass(prompt="Enter new password: ")
 	pw2 = getpass(prompt="Re-enter the password: ")
 
-	if pw1==pw2:
-		if validate_pw(pw1):
-			del pw2
-			return pw1
-		else:
-			del pw1, pw2
-			return None
+	if validate_pw(pw1, pw2):
+		return pw1
 	else:
-		del pw1, pw2
 		return None
 
 
-def validate_pw(password: str) -> bool:
+def validate_pw(pw: str, pw2: str) -> bool:
 	characters = (33, 126)
-	if len(password) < 8:
-		print("Password must be at least eight characters long.")
+	if len(pw) < 8:
+		print("Password must be at least eight characters long.\n")
 		return False
 
-	for letter in password:
+	for letter in pw:
 		if ord(letter) < characters[0] or ord(letter) > characters[1]:
-			print("Password must contain only a-z, A-Z, 0-9, !@$%^&*()[]{}<>,.-_+=\\~|/?#.")
+			print("Password must contain only a-z, A-Z, 0-9, !@$%^&*()[]{}<>,.-_+=\\~|/?#.\n")
 			return False
 
+	if pw != pw2:
+		print("Passwords do not match.\n")
+		return False
+
+	print("\n")
 	return True
 
 
@@ -71,16 +71,26 @@ def hash_pw(password: str) -> str:
 	return salt, pwhash
 
 
+def encrypt_credentials(text: str) -> str:
+	key = Fernet.generate_key()
+	encrypted = Fernet(key).encrypt(text.encode()).decode('ascii')
+	encrypted += key.decode('ascii')
+
+	return encrypted
+
+
 def main():
 	password = get_pw()
 
 	if password == None:
 		exit(0)
 
-	hash_data = hash_pw(password)
+	hash_data = hash_pw(password)  
+
+	encrypted_data = encrypt_credentials(f"{hash_data[0]},{hash_data[1]}")
 
 	credfile = open("pwcred.txt", "w")
-	credfile.write(f"{hash_data[0]},{hash_data[1]}")
+	credfile.write(f"{encrypted_data}")
 
 	print("Done.\n")
 
