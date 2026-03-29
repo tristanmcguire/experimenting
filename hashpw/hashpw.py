@@ -68,6 +68,7 @@ def hash_pw(password: str) -> str:
 	password += salt
 	hash_object = hashlib.sha3_512(password.encode())
 	pwhash = hash_object.hexdigest()
+
 	return salt, pwhash
 
 
@@ -79,6 +80,27 @@ def encrypt_credentials(text: str) -> str:
 	return encrypted
 
 
+def write_credentials(text: str): 
+	credentials = open("credentials", "w")
+	line = ""
+	linecount = 0
+
+	for x in range(len(text)):
+		if x % 45 == 0:
+			line += "\n"
+			print(len(line))
+			credentials.writelines(line)
+			line = ""
+			linecount += 1
+		else:
+			line += text[x]
+
+	credentials.writelines(line)
+	linecount += 1
+	print(f"Last line: {len(line)}")
+	print(f"Lines: {linecount}\n")
+
+
 def main():
 	password = get_pw()
 
@@ -86,11 +108,11 @@ def main():
 		exit(0)
 
 	hash_data = hash_pw(password)  
-
 	encrypted_data = encrypt_credentials(f"{hash_data[0]},{hash_data[1]}")
 
-	credfile = open("pwcred.txt", "w")
-	credfile.write(f"{encrypted_data}")
+	print(len(encrypted_data))
+
+	write_credentials(encrypted_data)
 
 	print("Done.\n")
 
