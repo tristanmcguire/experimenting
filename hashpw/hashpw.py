@@ -29,7 +29,7 @@ License: 		Copyright 2026 Tristan McGuire
 				OF SUCH DAMAGE.
 """
 
-import hashlib, secrets, argparse
+import hashlib, secrets, argparse, string
 from getpass import getpass
 from cryptography.fernet import Fernet
 
@@ -38,13 +38,13 @@ def get_pw() -> str:
 	pw1 = getpass(prompt="Enter new password: ")
 	pw2 = getpass(prompt="Re-enter the password: ")
 
-	if validate_pw(pw1, pw2):
+	if validate_input(pw1, pw2):
 		return pw1
 	else:
 		return None
 
 
-def validate_pw(pw: str, pw2: str) -> bool:
+def validate_input(pw: str, pw2: str) -> bool:
 	characters = (33, 126)
 	if len(pw) < 8:
 		print("Password must be at least eight characters long.\n")
@@ -52,7 +52,7 @@ def validate_pw(pw: str, pw2: str) -> bool:
 
 	for letter in pw:
 		if ord(letter) < characters[0] or ord(letter) > characters[1]:
-			print("Password must contain only a-z, A-Z, 0-9, !@$%^&*()[]{}<>,.-_+=\\~|/?#.\n")
+			print(f"Password must contain only 'a' through 'z', 'A' through 'Z', '0' through '9', and/or '{string.punctuation}'.\n")
 			return False
 
 	if pw != pw2:
@@ -72,47 +72,56 @@ def hash_pw(password: str) -> str:
 	return salt, pwhash
 
 
-def encrypt_credentials(text: str) -> str:
+def encrypt_credentials(clear_text: str):
 	key = Fernet.generate_key()
-	encrypted = Fernet(key).encrypt(text.encode()).decode('ascii')
-	encrypted += key.decode('ascii')
+	keyfile = open("./key", "w")
+	keyfile.write(key.decode('ascii'))
 
-	return encrypted
-
-
-def write_credentials(text: str): 
+	encrypted_text = Fernet(key).encrypt(clear_text.encode()).decode('ascii')
 	credentials = open("credentials", "w")
-	line = ""
-	linecount = 0
+	credentials.write(encrypted_text)
 
-	for x in range(len(text)):
-		if x % 45 == 0:
-			line += "\n"
-			print(len(line))
-			credentials.writelines(line)
-			line = ""
-			linecount += 1
-		else:
-			line += text[x]
 
-	credentials.writelines(line)
-	linecount += 1
-	print(f"Last line: {len(line)}")
-	print(f"Lines: {linecount}\n")
+def read_credentials() -> list:
+	data = ["", "", ""]
+
+	key_file = open("./key", "r")
+	data[0] = key_file.read()
+
+	credentials_file = open("./credentials", 'r')
+	data[1] = credentials_file.read()
+
+	return data
+
+
+def decrypt_credentials(key, encrypted_data: str) -> list:
+	f = Fernet(key)
+	hashed_password = f.decrypt(encrypted_data.encode()).decode("ascii")
+
+	return hashed_password
+
+
+def validate_credentials():
+	pass
 
 
 def main():
+	# Get user input password
 	password = get_pw()
 
 	if password == None:
 		exit(0)
 
+	# Hash, encrypt, and store the password in a credentials file
 	hash_data = hash_pw(password)  
 	encrypted_data = encrypt_credentials(f"{hash_data[0]},{hash_data[1]}")
 
-	print(len(encrypted_data))
+	# Decrypt password from credentials file
+	encrypted_credentials = read_credentials()
+	key = encrypted_credentials[0]
+	password = decrypt_credentials(key, encrypted_credentials[1])
 
-	write_credentials(encrypted_data)
+	print(f"Decrypted credentials: {password.split(',')}\n")
 
 	print("Done.\n")
 
