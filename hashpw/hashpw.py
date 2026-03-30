@@ -101,8 +101,18 @@ def decrypt_credentials(key, encrypted_data: str) -> list:
 	return hashed_password
 
 
-def validate_credentials():
-	pass
+def validate_credentials(salt: str, hashpw: str) -> bool:
+	password = getpass(prompt = "Enter your password: ")
+	password += salt
+	hash_object = hashlib.sha3_512(password.encode()).hexdigest()
+
+	print(f"Entered credentials: {hash_object}, Saved credentials: {hashpw}")
+
+	if hash_object == hashpw: 
+		return True
+	else:
+		return False
+
 
 
 def main():
@@ -119,9 +129,13 @@ def main():
 	# Decrypt password from credentials file
 	encrypted_credentials = read_credentials()
 	key = encrypted_credentials[0]
-	password = decrypt_credentials(key, encrypted_credentials[1])
+	password = decrypt_credentials(key, encrypted_credentials[1]).split(',')
 
-	print(f"Decrypted credentials: {password.split(',')}\n")
+	# Validate password
+	if validate_credentials(password[0], password[1]):
+		print("Success!")
+	else: 
+		print("Fail!!")
 
 	print("Done.\n")
 
