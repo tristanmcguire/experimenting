@@ -1,10 +1,10 @@
 #!/usr/bin/env python3.12
 
 """
-Filename:		hashpw.py
-Date:			2026.03.31
+Filename:		trig.py
+Date:			2026.04.04
 Author:			Tristan McGuire
-Description:	Testing hshlib functionality and a simple password hashing process.
+Description:	Remembering how trigonometry works.
 License: 		Copyright 2026 Tristan McGuire
 
 				Redistribution and use in source and binary forms, with or without modification, are permitted 
@@ -81,13 +81,12 @@ def csc_theta(hyp: float, opp: float) -> float:
 	return hyp/opp
 
 
-def theta_to_degrees(theta: float) -> float:
-	return (180 / math.pi) * theta
+def radians_to_degrees(radians: float) -> float:
+	return (180 / math.pi) * radians
 
 
-def degrees_to_radians(angle: int) -> float:
-	return math.pi/180.0 * angle
-
+def degrees_to_radians(degrees: int) -> float:
+	return math.pi/180.0 * degrees
 
 
 if __name__ == "__main__":
@@ -102,6 +101,7 @@ if __name__ == "__main__":
 	cot_theta = cot_theta(adj, opp)					# cao - reciprocal of toa (tangent)
 	sec_theta = sec_theta(hyp, adj)					# sha - reciprocal of cah (cosine)
 	csc_theta = csc_theta(hyp, opp)					# cho - reciprocal of soh (sine)
+
 	theta_radians = math.acos(((sides[1]**2) + (sides[2]**2) - (sides[0]**2)) / (2 * sides[1] * sides[2]))
 	theta_degrees = theta_to_degrees(theta_radians)
 
@@ -114,16 +114,16 @@ if __name__ == "__main__":
 	print(f"Secant Theta:\t\t{sec_theta},\t||\tCosecant Theta:\t\t{csc_theta}")
 	print()
 
-	for x in range(360):
+	for x in range(0, 361, 10):
 		radians = degrees_to_radians(x)
 
 		sin_value = math.sin(radians)
+		cos_value = math.cos(radians)
 		
 		if math.fabs(sin_value) < 0.0009:
 			sin_value = 0.00  					# This cleans up a ridiculously small value being returned at 
 												# the 0 crossing between positive and negative values for the 
 												# final 90 degrees of the wave.
 
-		print(sin_value)
-
+		print(f"Degrees: {x}\t||\tSine: {sin_value:.4f}\t||\tCosine: {cos_value:.4f}")
 
