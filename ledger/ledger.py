@@ -1,10 +1,10 @@
 #!/usr/bin/env python3.12
 
 """
-Filename:		hashpw.py
+Filename:		ledger.py
 Date:			2026.03.31
 Author:			Tristan McGuire
-Description:	Testing hshlib functionality and a simple password hashing process.
+Description:	Thinking about how to organise a ledger.
 License: 		Copyright 2026 Tristan McGuire
 
 				Redistribution and use in source and binary forms, with or without modification, are permitted 
