@@ -32,6 +32,14 @@ License: 		Copyright 2026 Tristan McGuire
 import datetime as dt
 
 
+class Transaction():
+	pass
+
+
+class Account():
+	pass
+
+
 class Book():
 	def __init__(self):
 		self.book_name = ""
@@ -60,6 +68,7 @@ class Book():
 	def set_account_names(self, account_names: list) -> None:
 		for x in range(len(self.number_of_accounts)):
 			self.accounts[x](account_names[x])
+
 
 if __name__ == "__main__":
 	print(dt.date(2026, 4, 1))
