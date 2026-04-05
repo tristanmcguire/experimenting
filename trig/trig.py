@@ -29,7 +29,7 @@ License: 		Copyright 2026 Tristan McGuire
 				OF SUCH DAMAGE.
 """
 
-import math
+import math, re 
 
 
 def pythag(adj: float = None, opp: float = None, hyp: float = None) -> list:
@@ -88,6 +88,34 @@ def radians_to_degrees(radians: float) -> float:
 def degrees_to_radians(degrees: int) -> float:
 	return math.pi/180.0 * degrees
 
+class Triangle:
+	def __init__(self):
+		self.sides = [0.0, 0.0, 0.0]
+		self.angles = [0.0, 0.0, 0.0]
+		self.area = 0.0
+		self.type = None
+		self.height = 0.0
+
+	def get_sides(self):
+		temp_input = input("Enter the lengths of the three sides: ")
+		temp_sides = re.findall(r'(\d*\.?\d+)', temp_input)
+		self.sides = [float(x) for x in temp_sides]
+
+	def validate_triangle(self):
+		pass
+
+	def calculate_angles(self):
+		pass
+
+	def calculate_area(self):
+		pass
+
+	def calculate_height(self):
+		pass
+
+	def calculate_type(self):
+		pass
+
 
 if __name__ == "__main__":
 	adj = 6.7
@@ -103,7 +131,7 @@ if __name__ == "__main__":
 	csc_theta = csc_theta(hyp, opp)					# cho - reciprocal of soh (sine)
 
 	theta_radians = math.acos(((sides[1]**2) + (sides[2]**2) - (sides[0]**2)) / (2 * sides[1] * sides[2]))
-	theta_degrees = theta_to_degrees(theta_radians)
+	theta_degrees = radians_to_degrees(theta_radians)
 
 	print(f"\n{'='*100}")
 	print(f"Hypotenuse: {hyp}\n")
@@ -114,6 +142,7 @@ if __name__ == "__main__":
 	print(f"Secant Theta:\t\t{sec_theta},\t||\tCosecant Theta:\t\t{csc_theta}")
 	print()
 
+	"""
 	for x in range(0, 361, 10):
 		radians = degrees_to_radians(x)
 
@@ -126,4 +155,8 @@ if __name__ == "__main__":
 												# final 90 degrees of the wave.
 
 		print(f"Degrees: {x}\t||\tSine: {sin_value:.4f}\t||\tCosine: {cos_value:.4f}")
+	"""
 
+	triangle = Triangle()
+
+	triangle.get_sides()
